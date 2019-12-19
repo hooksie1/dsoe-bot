@@ -45,6 +45,10 @@ func sendMessage(m Message, s string, p string) {
 
 }
 
+func buildExcuse(m Message, e Excuse) string {
+	excuse := fmt.Sprintf("%s %s %s", m.Message.From.FirstName, m.Message.From.LastName, e.Message)
+}
+
 func Bot(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("started")
@@ -63,7 +67,8 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 	if message.Message.Text == "/excuse" || message.Message.Text == "/excuse@dsoebot" {
 		excuse := excuses.NewExcuse()
-		sendMessage(message, excuse.Message, "")
+		note := buildExcuse(message, excuse)
+		sendMessage(message, note, "")
 	}
 
 }
