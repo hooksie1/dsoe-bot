@@ -3,6 +3,7 @@ package p
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -45,8 +46,8 @@ func sendMessage(m Message, s string, p string) {
 
 }
 
-func buildExcuse(m Message, e Excuse) string {
-	excuse := fmt.Sprintf("%s %s %s", m.Message.From.FirstName, m.Message.From.LastName, e.Message)
+func buildExcuse(m Message, e excuses.Excuse) string {
+	return fmt.Sprintf("%s %s %s", m.Message.From.FirstName, m.Message.From.LastName, e.Message)
 }
 
 func Bot(w http.ResponseWriter, r *http.Request) {
