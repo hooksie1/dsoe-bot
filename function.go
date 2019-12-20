@@ -98,9 +98,9 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		sendMessage(message, note, "")
 		id, err := SendManager(note)
 		if err != nil {
-			log(err)
+			log.Println(err)
 		}
-		log(id)
+		log.Println(id)
 	}
 
 }
