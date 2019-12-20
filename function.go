@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/mailgun/mailgun-go"
 	"gitlab.com/hooksie1/excuses"
 )
 
@@ -50,6 +51,18 @@ func buildExcuse(m Message, e excuses.Excuse) string {
 	return fmt.Sprintf("%s %s %s", m.Message.From.FirstName, m.Message.From.LastName, e.Message)
 }
 
+func SendManager(excuse string) (string, error) {
+	mg := mailgun.NewMailgun(os.Getenv("DOMAIN"), os.Getenv("API_KEY"), os.Getenv("PUB_API_KEY"))
+	m := mg.NewMessage(
+		"john@hooks.technology",
+		"Absense",
+		excuse,
+		"thomas.brien@fedex.com",
+	)
+	_, id, err := mg.Send(m)
+	return id, err
+}
+
 func Bot(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("started")
@@ -70,6 +83,17 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		excuse := excuses.NewExcuse()
 		note := buildExcuse(message, excuse)
 		sendMessage(message, note, "")
+	}
+
+	if message.Message.Text == "/excuse send" || message.Message.Text == "/excuse@dsoebot send" {
+		excuse := excuses.NewExcuse()
+		note := buildExcuse(message, excuse)
+		sendMessage(message, note, "")
+		id, err := SendManager(note)
+		if err != nil {
+			log(err)
+		}
+		log(id)
 	}
 
 }
