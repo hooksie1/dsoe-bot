@@ -53,11 +53,12 @@ func buildExcuse(m Message, e excuses.Excuse) string {
 
 func SendManager(excuse string) (string, error) {
 	mg := mailgun.NewMailgun(os.Getenv("DOMAIN"), os.Getenv("API_KEY"), os.Getenv("PUB_API_KEY"))
+	toAddress := os.Getenv("SEND_TO")
 	m := mg.NewMessage(
 		"john@hooks.technology",
 		"Absense",
 		excuse,
-		"thomas.brien@fedex.com",
+		toAddress,
 	)
 	_, id, err := mg.Send(m)
 	return id, err
