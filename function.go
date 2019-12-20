@@ -2,14 +2,16 @@ package p
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
-	"github.com/mailgun/mailgun-go"
+	"github.com/mailgun/mailgun-go/v3"
 	"gitlab.com/hooksie1/excuses"
 )
 
@@ -52,7 +54,7 @@ func buildExcuse(m Message, e excuses.Excuse) string {
 }
 
 func SendManager(excuse string) (string, error) {
-	mg := mailgun.NewMailgun(os.Getenv("DOMAIN"), os.Getenv("API_KEY"), os.Getenv("PUB_API_KEY"))
+	mg := mailgun.NewMailgun(os.Getenv("DOMAIN"), os.Getenv("API_KEY"))
 	toAddress := os.Getenv("SEND_TO")
 	m := mg.NewMessage(
 		"john@hooks.technology",
@@ -60,7 +62,11 @@ func SendManager(excuse string) (string, error) {
 		excuse,
 		toAddress,
 	)
-	_, id, err := mg.Send(m)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	_, id, err := mg.Send(ctx, m)
 	return id, err
 }
 
