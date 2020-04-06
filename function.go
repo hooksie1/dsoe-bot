@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"math/rand"
 
 	"github.com/mailgun/mailgun-go/v3"
 	"gitlab.com/hooksie1/excuses"
