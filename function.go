@@ -123,8 +123,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 	
 	if message.Message.Text == "/buzzword please" || message.Message.Text == "/buzzword@dsoebot please" {
 		phrase := buzzword()
-		note := buildExcuse(message, phrase)
-		sendMessage(message, note, "")
+		sendMessage(message, phrase, "")
 	}
 
 }
