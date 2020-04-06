@@ -19,6 +19,22 @@ var token = os.Getenv("TOKEN")
 var port = os.Getenv("PORT")
 var url = os.Getenv("URL")
 
+func buzzword() string {
+        firstColumn := []string{"integrated","total","systematized","parallel","functional","responsive","optimal","synchronized","compatible","balanced"}
+        secondColumn := []string{"management","organizational","monitored","reciprocal","digital","logistical","transitional","incremental","third-generation","policy"}
+        thirdColumn := []string{"options","flexibility","capability","mobility","programming","concept","time-phase","projection","hardware","contingency"}
+
+        first := rand.Intn(len(firstColumn))
+        second := rand.Intn(len(secondColumn))
+        third := rand.Intn(len(thirdColumn))
+
+        f := firstColumn[first]
+        s := secondColumn[second]
+        t := thirdColumn[third]
+
+        return fmt.Sprintf("%s %s %s", f, s, t) 
+}
+
 func sendMessage(m Message, s string, p string) {
 	log.Println("setting up message")
 	var response Response
@@ -71,6 +87,8 @@ func SendManager(excuse string) (string, error) {
 }
 
 func Bot(w http.ResponseWriter, r *http.Request) {
+	
+	rand.Seed(time.Now().UnixNano())
 
 	log.Println("started")
 
@@ -101,6 +119,12 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 		log.Println(id)
+	}
+	
+	if message.Message.Text == "/buzzword please" || message.Message.Text == "/buzzword@dsoebot please" {
+		phrase := buzzword()
+		note := buildExcuse(message, phrase)
+		sendMessage(message, note, "")
 	}
 
 }
